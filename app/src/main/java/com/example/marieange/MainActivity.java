@@ -2,7 +2,9 @@ package com.example.marieange;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TimePicker;
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         final EditText input = new EditText(this); // Je crée un deitText je lui transmet un contexte
         builder.setView(input); // Je transmet le texte à mon builder
 
-        // Sur le bouton ajouter
+        // Sur le bouton ajouter pour ajouter un evenememt
         builder.setPositiveButton("Ajouter", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -145,9 +148,15 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         Intent intent = new Intent(this, DetailActivity.class);
         // transmettre l'evenement avec ma clé
         intent.putExtra(DetailActivity.EVENEMENT_EXTRA, evenement);
-        // Transmettre les elements graphique avec Pair
 
-        startActivity(intent);
+        // Transmettre les elements graphiques avec Pair à mon DetailActivity (mon imageView , le nom de la transition )
+        // Ensuite remettre dans activity_detail.xml et row_date les noms de transitions
+        Pair<View, String> p1 = new Pair<>(viewHolder.iv, "imageTransition"); // dans row_date mon ImageView
+        Pair<View, String> p2 = new Pair<>(viewHolder.tv_description, "descTransition"); // dans row_date mon texte de description
+
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, p1, p2);
+
+        startActivity(intent, options.toBundle()); // On transmet le bundle à partir de nos options
 
         // Suppression ........................
         // this : le contexte qui est mainActivity
